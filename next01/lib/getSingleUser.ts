@@ -1,8 +1,10 @@
 export default async function getSingleUser(id: string) {
-  const res = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`);
+  const res = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`, {
+    next: { revalidate: 60 },
+  });
 
   if (!res.ok) {
-    throw new Error("Failed to fetch data");
+    return undefined;
   }
 
   return res.json();

@@ -1,26 +1,43 @@
+import getAllUsers from "@/lib/getAllUsers";
 import getSingleUser from "@/lib/getSingleUser";
 import getSingleUserPost from "@/lib/getSingleUserPost";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import React from "react";
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const user: User = await getSingleUser(id);
 
+  if (!user?.name) {
+    return {
+      title: "User not found",
+      description: "User not found",
+    };
+  }
+
   return {
     title: user.name,
-    description: `this is the description page of user ${user.name}`,
+    description: `this is the page of user ${user.name}`,
   };
 }
 
 export default async function UserProfile({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
   const user: User = await getSingleUser(id);
   const userPost: Post[] = await getSingleUserPost(id);
+
+  if (!user?.name) {
+    return notFound();
+  }
 
   return (
     <div className="m-10">
@@ -64,4 +81,12 @@ export default async function UserProfile({
       </div>
     </div>
   );
+}
+
+export async function generateStaticParams() {
+  const users: User[] = await getAllUsers();
+
+  return users.map((user) => ({
+    id: user.id.toString(),
+  }));
 }

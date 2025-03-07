@@ -8,3 +8,7 @@
 - Learn about SSG(Server Side Generation), SSR(Server Side Rending), ISR(Incremental Static Regeneration).
 
 ---
+
+### next02
+
+- In this we created a wiki page to search data with wikipedia api.
